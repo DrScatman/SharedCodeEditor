@@ -19,6 +19,11 @@
         ></v-select>
         <v-text-field label="Sets" type="number" step="1.0" v-model.number="sets" />
         <v-text-field label="Reps" type="number" step="1.0" v-model.number="reps" />
+        <v-select
+          v-model="databasePrivacy"
+          v-bind:items="privacyOptions"
+          label="Workout Privacy"
+        ></v-select>
         <v-tooltip bottom>
                 <template v-slot:activator="{ on }">
                     <v-btn color="primary" @click="remove" v-bind:disabled="userSelections.length == 0" v-on="on">Remove Selection(s)</v-btn>
@@ -49,8 +54,8 @@
           <td>{{ myWorkout.Push }}</td>
           <td>{{ myWorkout.Pull }}</td>
           <td>{{ myWorkout.Legs }}</td>
-          <td id="sets">{{ myWorkout.Sets.toFixed(2) }}</td>
-          <td id="reps">{{ myWorkout.Reps.toFixed(2) }}</td>
+          <td id="sets">{{ myWorkout.Sets }}</td>
+          <td id="reps">{{ myWorkout.Reps }}</td>
           <td><input type="checkbox" v-bind:id="myWorkout.mykey" v-on:change="selectionHandler" /></td>
         </tr>
       </tbody>
@@ -71,13 +76,15 @@ import { AppDB } from "../db-init.js";
       pushCategories : ["Bench press", "Shoulder press", "Chest-Fly", "Triceps", "Push-ups"],
       pullCategories : ["Row", "Pull-ups", "Pull-downs", "Shrug", "Dead lift"],
       legCategories : ["Squat", "Romanian deadlift", "Lunge", "Calf-raises", "Leg press"],
+      privacyOptions: ["Private", "Public"],
       userSelections : [],
-      myWorkout: [],
-      pushExercise: "",
-      pullExercise: "",
-      legExercise: "",
-      sets: 0,
-      reps: 0
+      myWorkout : [],
+      pushExercise : "",
+      pullExercise : "",
+      legExercise : "",
+      sets : 0,
+      reps : 0,
+      databasePrivacy : ""
     };
   },
 
