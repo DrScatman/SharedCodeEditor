@@ -1,12 +1,11 @@
 <template>
   <div id="page">
-    <h2>Shared Code Editor: {{ currFileKey }}</h2>
+    <h2>Shared Code Editor: {{ fileName }}</h2>
     <br />
     <div id="editor">
       <textarea
         v-model="codeText"
-        v-mode.lazy="codeText"
-        v-on:change="changeHandler"
+        v-on:input="changeHandler"
         placeholder=""
         type="text"
       >
@@ -24,7 +23,8 @@ export default {
   data() {
     return {
       currFileKey: store.state.fileKey,
-      codeText: ""
+      codeText: "",
+      fileName: this.getFileName()
     };
   },
 
@@ -41,8 +41,20 @@ export default {
       }
     },
 
+    getFileName() {
+      const entry = AppDB.ref().child("public/" + store.state.fileKey + "fileName");
+
+      if (entry != null) {
+        this.fileName = entry.once('value').then((snapshot) => { snapshot.val() });
+      } 
+      if (this.fileName == null || this.fileName.length == 0) {
+          this.fileName = AppDB.ref().child("private/" + store.state.fileKey + "fileName")
+          .once('value').then((snapshot) => { snapshot.val() });
+      }
+    },
+
     firebaseUpdateHandler(snapshot) {
-      this.codeText += snapshot.val();
+      this.codeText = snapshot.val();
     }
   },
 

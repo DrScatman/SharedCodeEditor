@@ -137,20 +137,24 @@ export default {
 
     selectionHandler(changeEvent) {
       const whichKey = changeEvent.target.id;
+      
       if (changeEvent.target.checked) {
-        store.state.set(whichKey);
+        store.state.setFileKey(whichKey);
         this.userSelections.push(whichKey);
-      } else {
+
+      } 
+      else 
+      {
         this.userSelections = this.userSelections.filter(function(value) {
           if (value != whichKey) {
-                    store.state.set(value);
+              store.state.setFileKey(value);
             return true;
           }
           return false;
         });
 
         if (this.userSelections.length == 0) {
-                  store.state.set("");
+                  store.state.setFileKey("");
         }
       }
     }

@@ -6,8 +6,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     fileKey: "",
-    set (newKey) {
-        this.fileKey = newKey;
-      }
+    fileName: "",
+    setFileKey(newKey) {
+      this.fileKey = newKey;
+    },
+    setFileName(newName) {
+      this.fileKey = newName;
+    }
   },
 })
