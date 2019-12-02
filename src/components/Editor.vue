@@ -3,7 +3,14 @@
     <h2>Shared Code Editor: {{ currFileKey }}</h2>
     <br />
     <div id="editor">
-      <textarea v-on:change="changeHandler" placeholder=""> </textarea>
+      <textarea
+        v-model="codeText"
+        v-mode.lazy="codeText"
+        v-on:change="changeHandler"
+        placeholder=""
+        type="text"
+      >
+      </textarea>
     </div>
   </div>
 </template>
@@ -15,17 +22,22 @@ import store from "../store.js";
 export default {
   store,
   data() {
-    return { currFileKey: store.state.fileKey };
+    return {
+      currFileKey: store.state.fileKey,
+      codeText: ""
+    };
   },
 
   methods: {
-    changeHandler(changeEvent) {
-      AppDB.ref("public/" + store.state.fileKey)
-        .update({ codeText: changeEvent.codeText })
-        .catch(() => {});
-      AppDB.ref("private/" + store.state.fileKey).update({
-        codeText: changeEvent.codeText
-      });
+    changeHandler() {
+      const entry = AppDB.ref().child("public/" + store.state.fileKey);
+      if (entry != null) {
+        entry.update({ codeText: this.codeText });
+      } else {
+        AppDB.ref("private/" + store.state.fileKey).update({
+          codeText: this.codeText
+        });
+      }
     }
   }
 };
