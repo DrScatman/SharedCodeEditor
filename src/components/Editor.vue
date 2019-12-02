@@ -31,13 +31,42 @@ export default {
   methods: {
     changeHandler() {
       const entry = AppDB.ref().child("public/" + store.state.fileKey);
+
       if (entry != null) {
         entry.update({ codeText: this.codeText });
       } else {
-        AppDB.ref("private/" + store.state.fileKey).update({
-          codeText: this.codeText
-        });
+        AppDB.ref()
+          .child("private/" + store.state.fileKey)
+          .update({ codeText: this.codeText });
       }
+    },
+
+    firebaseUpdateHandler(snapshot) {
+      this.codeText += snapshot.val();
+    }
+  },
+
+  mounted() {
+    const entry = AppDB.ref().child("public/" + store.state.fileKey);
+
+    if (entry != null) {
+      entry.on("child_changed", this.firebaseUpdateHandler);
+    } else {
+      AppDB.ref()
+        .child("private/" + store.state.fileKey)
+        .on("child_changed", this.firebaseUpdateHandler);
+    }
+  },
+
+  beforeDestroy() {
+    const entry = AppDB.ref().child("public/" + store.state.fileKey);
+
+    if (entry != null) {
+      entry.off("child_changed", this.firebaseUpdateHandler);
+    } else {
+      AppDB.ref()
+        .child("private/" + store.state.fileKey)
+        .off("child_changed", this.firebaseUpdateHandler);
     }
   }
 };
