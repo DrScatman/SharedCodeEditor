@@ -35,13 +35,16 @@
 <script>
 // import Login from './components/Login';
 import { AppAUTH } from "./db-init.js";
+import store from './store.js'
 
 export default {
+  store,
   name: 'App',
   components: {
-    //  Login,
+    // Login,
   },
   data: () => ({
+      fileKey: store.state.fileKey,
       isLoggedIn: false,
       dialog: false
   }),
@@ -49,7 +52,8 @@ export default {
   methods: {
     doSignOut() {
         AppAUTH.signOut().then(() => {
-            this.$router.back();
+          // Needs to go backk to sign-in
+            this.$router.back().back();
             this.dialog = false
         });
     }
