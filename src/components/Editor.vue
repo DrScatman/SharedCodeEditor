@@ -29,16 +29,22 @@ export default {
   },
 
   methods: {
-    changeHandler() {
-      const entry = AppDB.ref().child("public/" + store.state.fileKey);
+    async changeHandler() {
+    var entry;
 
-      if (entry != null) {
-        entry.update({ codeText: this.codeText });
+    await AppDB.ref().child("public/" + store.state.fileKey).once('value', function(snapshot) {
+      if(snapshot.exists()) {
+        entry = true;
       } else {
-        AppDB.ref()
-          .child("private/" + store.state.fileKey)
-          .update({ codeText: this.codeText });
+        entry = false;
       }
+    });
+
+    if(entry == true) {
+        AppDB.ref().child("public/" + store.state.fileKey).update({ codeText: this.codeText });
+    } else {
+      AppDB.ref().child("private/" + store.state.fileKey).update({ codeText: this.codeText });
+    }
     },
 
     firebaseUpdateHandler(snapshot) {

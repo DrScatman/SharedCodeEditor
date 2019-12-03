@@ -69,6 +69,10 @@
         </table>
       </v-simple-table>
     </div>
+    <v-snackbar v-model="error">
+          {{ text }}
+          <v-btn color="pink" text @click="error = false">Close</v-btn>
+        </v-snackbar>
   </div>
 </template>
 
@@ -86,7 +90,9 @@ export default {
       fileName: "",
       fileType: "",
       databasePrivacy: "",
-      currFileKey: store.state.fileKey
+      currFileKey: store.state.fileKey,
+      error: false,
+      text: ""
     };
   },
 
@@ -124,7 +130,8 @@ export default {
         this.$router.push({ path: "/editor" });
       }
       else {
-        alert("Nope")
+        this.error = true;
+        this.text = "That file doesn't belong to you! ";
       }
     },
 
