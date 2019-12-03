@@ -24,7 +24,7 @@ export default {
     return {
       currFileKey: store.state.fileKey,
       codeText: "",
-      fileName: this.getFileName()
+      fileName: ""
     };
   },
 
@@ -41,33 +41,28 @@ export default {
       }
     },
 
-    getFileName() {
-      const entry = AppDB.ref().child("public/" + store.state.fileKey + "fileName");
-
-      if (entry != null) {
-        this.fileName = entry.once('value').then((snapshot) => { snapshot.val() });
-      } 
-      if (this.fileName == null || this.fileName.length == 0) {
-          this.fileName = AppDB.ref().child("private/" + store.state.fileKey + "fileName")
-          .once('value').then((snapshot) => { snapshot.val() });
-      }
-    },
-
     firebaseUpdateHandler(snapshot) {
       this.codeText = snapshot.val();
     }
   },
 
-  mounted() {
+   mounted() {
     const entry = AppDB.ref().child("public/" + store.state.fileKey);
 
     if (entry != null) {
       entry.on("child_changed", this.firebaseUpdateHandler);
-    } else {
+      AppDB.ref().child("public/" + store.state.fileKey + "/codeText/").once('value').then((snapshot) => this.firebaseUpdateHandler(snapshot));
+      AppDB.ref().child("public/" + store.state.fileKey + "/fileName/").once('value').then((snapshot) => this.fileName = snapshot.val());
+    } 
+    else 
+    {
       AppDB.ref()
         .child("private/" + store.state.fileKey)
         .on("child_changed", this.firebaseUpdateHandler);
+      AppDB.ref().child("private/" + store.state.fileKey + "/codeText/").once('value').then((snapshot) => this.firebaseUpdateHandler(snapshot));
+      AppDB.ref().child("private/" + store.state.fileKey + "/fileName/").once('value').then((snapshot) => this.fileName = snapshot.val());
     }
+    
   },
 
   beforeDestroy() {
