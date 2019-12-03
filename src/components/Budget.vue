@@ -55,7 +55,7 @@
           <tbody>
             <tr id="dataRows" v-for="(myFiles, pos) in myFiles" :key="pos">
               <td>{{ myFiles.fileName }}</td>
-              <td>{{ myFiles.email }} </td>
+              <td>{{ myFiles.email }}</td>
               <td>{{ myFiles.privacy }}</td>
               <td>
                 <input
@@ -70,15 +70,15 @@
       </v-simple-table>
     </div>
     <v-snackbar v-model="error">
-          {{ text }}
-          <v-btn color="pink" text @click="error = false">Close</v-btn>
-        </v-snackbar>
+      {{ text }}
+      <v-btn color="pink" text @click="error = false">Close</v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import { AppDB } from "../db-init.js";
-import store from '../store.js'
+import store from "../store.js";
 
 export default {
   store,
@@ -100,7 +100,7 @@ export default {
     removeExpenseItem(snapshot) {
       /* snapshot.key will hold the key of the item being REMOVED */
       const item = snapshot.val();
-      if (item.privacy == "Private") {
+      if (item.email == store.state.userEmail) {
         this.myFiles = this.myFiles.filter(z => z.mykey != snapshot.key);
         this.userSelections = [];
       } else {
@@ -126,10 +126,14 @@ export default {
 
     editFileButtonHandler() {
       var result = this.myFiles.find(r => r.mykey == this.userSelections[0]);
-      if(store.state.userEmail == result.email) {
+      if (result.privacy == "Public") {
         this.$router.push({ path: "/editor" });
-      }
-      else {
+      } else if (
+        store.state.userEmail == result.email &&
+        result.privacy == "Private"
+      ) {
+        this.$router.push({ path: "/editor" });
+      } else {
         this.error = true;
         this.text = "That file doesn't belong to you! ";
       }
@@ -137,32 +141,36 @@ export default {
 
     removeButtonHandler() {
       this.userSelections.forEach(victimKey => {
-        AppDB.ref("private")
-          .child(victimKey)
-          .remove();
+        if (victimKey.email == store.state.email) {
+          AppDB.ref("private")
+            .child(victimKey)
+            .remove();
+        }
+        if (victimKey.email == store.state.email) {
+          AppDB.ref("public")
+            .child(victimKey)
+            .remove();
+        }
       });
     },
 
     selectionHandler(changeEvent) {
       const whichKey = changeEvent.target.id;
-      
+
       if (changeEvent.target.checked) {
         store.state.setFileKey(whichKey);
         this.userSelections.push(whichKey);
-
-      } 
-      else 
-      {
+      } else {
         this.userSelections = this.userSelections.filter(function(value) {
           if (value != whichKey) {
-              store.state.setFileKey(value);
+            store.state.setFileKey(value);
             return true;
           }
           return false;
         });
 
         if (this.userSelections.length == 0) {
-                  store.state.setFileKey("");
+          store.state.setFileKey("");
         }
       }
     }
