@@ -46,19 +46,25 @@ export default {
     }
   },
 
-   mounted() {
-    const entry = AppDB.ref().child("public/" + store.state.fileKey);
+   async mounted() {
+    var entry;
 
-    if (entry != null) {
-      entry.on("child_changed", this.firebaseUpdateHandler);
+    await AppDB.ref().child("public/" + store.state.fileKey).once('value', function(snapshot) {
+      if(snapshot.exists()) {
+        entry = true;
+      } else {
+        entry = false;
+      }
+    });
+
+    if (entry === true) {
+      AppDB.ref().child("public/" + store.state.fileKey).on("child_changed", this.firebaseUpdateHandler);
       AppDB.ref().child("public/" + store.state.fileKey + "/codeText/").once('value').then((snapshot) => this.firebaseUpdateHandler(snapshot));
       AppDB.ref().child("public/" + store.state.fileKey + "/fileName/").once('value').then((snapshot) => this.fileName = snapshot.val());
     } 
     else 
     {
-      AppDB.ref()
-        .child("private/" + store.state.fileKey)
-        .on("child_changed", this.firebaseUpdateHandler);
+      AppDB.ref().child("private/" + store.state.fileKey).on("child_changed", this.firebaseUpdateHandler);
       AppDB.ref().child("private/" + store.state.fileKey + "/codeText/").once('value').then((snapshot) => this.firebaseUpdateHandler(snapshot));
       AppDB.ref().child("private/" + store.state.fileKey + "/fileName/").once('value').then((snapshot) => this.fileName = snapshot.val());
     }
@@ -90,6 +96,8 @@ textarea {
   top: 80px; /* Header Height */
   bottom: 20px; /* Footer Height */
   width: 90%;
+  right: 0;
+  left: 0;
   margin-left: auto;
   margin-right: auto;
   border: 2px solid lightgray;

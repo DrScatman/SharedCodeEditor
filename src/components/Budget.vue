@@ -47,6 +47,7 @@
           <thead>
             <tr>
               <th id="th">File Name</th>
+              <th id="th">User Email</th>
               <th id="th">Privacy</th>
               <th id="th">Selection</th>
             </tr>
@@ -54,6 +55,7 @@
           <tbody>
             <tr id="dataRows" v-for="(myFiles, pos) in myFiles" :key="pos">
               <td>{{ myFiles.fileName }}</td>
+              <td>{{ myFiles.email }} </td>
               <td>{{ myFiles.privacy }}</td>
               <td>
                 <input
@@ -117,8 +119,13 @@ export default {
     },
 
     editFileButtonHandler() {
-      
-      this.$router.push({ path: "/editor" });
+      var result = this.myFiles.find(r => r.mykey == this.userSelections[0]);
+      if(store.state.userEmail == result.email) {
+        this.$router.push({ path: "/editor" });
+      }
+      else {
+        alert("Nope")
+      }
     },
 
     removeButtonHandler() {
