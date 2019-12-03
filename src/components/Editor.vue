@@ -94,9 +94,11 @@ textarea {
   position: absolute;
   top: 80px; /* Header Height */
   bottom: 20px; /* Footer Height */
-  width: 100%;
-  margin-left: 20px;
-  margin-right: 20px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid lightgray;
+  border-radius: 4px;
 }
 
 h2 {

@@ -36,6 +36,7 @@
 
 <script>
 import { AppAUTH } from "../db-init.js";
+import store from '../store.js';
 
 export default {
   data: function() {
@@ -52,6 +53,7 @@ export default {
     doSignUp() {
       AppAUTH.createUserWithEmailAndPassword(this.userEmail, this.userPassword)
         .then(() => {
+          store.state.setUserEmail(this.userEmail);
           this.$router.push({ path: "/budget" });
         })
         .catch(err => {
@@ -63,6 +65,7 @@ export default {
     doSignIn() {
       AppAUTH.signInWithEmailAndPassword(this.userEmail, this.userPassword)
         .then(() => {
+          store.state.setUserEmail(this.userEmail);
           this.$router.push({ path: "/budget" });
         })
         .catch(err => {

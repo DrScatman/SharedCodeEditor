@@ -3,11 +3,6 @@
     <h2>Shared Code Editor</h2>
     <div id="workoutForm">
       <v-text-field label="File Name" type="text" v-model="fileName" />
-      <v-text-field
-        label="File Type (extension)"
-        type="text"
-        v-model="fileType"
-      />
       <v-select
         v-model="databasePrivacy"
         v-bind:items="privacyOptions"
@@ -52,7 +47,6 @@
           <thead>
             <tr>
               <th id="th">File Name</th>
-              <th id="th">File Type</th>
               <th id="th">Privacy</th>
               <th id="th">Selection</th>
             </tr>
@@ -60,7 +54,6 @@
           <tbody>
             <tr id="dataRows" v-for="(myFiles, pos) in myFiles" :key="pos">
               <td>{{ myFiles.fileName }}</td>
-              <td>{{ myFiles.fileType }}</td>
               <td>{{ myFiles.privacy }}</td>
               <td>
                 <input
@@ -117,13 +110,14 @@ export default {
         .push()
         .set({
           fileName: this.fileName,
-          fileType: this.fileType,
           privacy: this.databasePrivacy,
-          codeText: ""
+          codeText: "",
+          email: store.state.userEmail
         });
     },
 
     editFileButtonHandler() {
+      
       this.$router.push({ path: "/editor" });
     },
 

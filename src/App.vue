@@ -2,8 +2,8 @@
   <v-app>
     <v-app-bar app>
       <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
+        <span>Code</span>
+        <span class="font-weight-light">SHARE</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       
@@ -33,7 +33,6 @@
 </template>
 
 <script>
-// import Login from './components/Login';
 import { AppAUTH } from "./db-init.js";
 import store from './store.js'
 

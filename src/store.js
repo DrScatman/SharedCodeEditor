@@ -7,6 +7,10 @@ export default new Vuex.Store({
   state: {
     fileKey: "",
     fileName: "",
+    userEmail: "",
+    setUserEmail(email) {
+      this.userEmail = email;
+    },
     setFileKey(newKey) {
       this.fileKey = newKey;
     },
